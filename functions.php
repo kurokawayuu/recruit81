@@ -3346,3 +3346,40 @@ function debug_cf7_user_info() {
     }
 }
 add_action('wp_footer', 'debug_cf7_user_info');
+
+
+
+/**
+ * 求人カード全体クリックで詳細ページに遷移する機能
+ */
+function add_job_card_click_functionality() {
+    // インラインJavaScriptのみを追加
+    ?>
+    <script>
+    jQuery(document).ready(function($) {
+        // ジョブカードのクリックイベントを設定
+        $('.job-card').each(function() {
+            // カード内の詳細ボタンのURLを取得
+            var detailUrl = $(this).find('.detail-view-button').attr('href');
+            
+            if (detailUrl) {
+                // カード自体をクリック可能にする
+                $(this).css('cursor', 'pointer');
+                
+                // カードクリック時の処理
+                $(this).on('click', function(e) {
+                    // ボタンやリンク、フォーム要素などをクリックした場合はそれらの動作を優先
+                    if ($(e.target).is('a, button, input, textarea, select, .keep-button, .keep-button *, .detail-view-button, .detail-view-button *, span.star, .star *')) {
+                        return; // カード全体のクリックイベントをキャンセル
+                    }
+                    
+                    // それ以外の部分をクリックした場合は詳細ページへ遷移
+                    window.location.href = detailUrl;
+                });
+            }
+        });
+    });
+    </script>
+    <?php
+}
+add_action('wp_footer', 'add_job_card_click_functionality');
